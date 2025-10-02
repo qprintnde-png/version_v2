@@ -1,11 +1,75 @@
 import { useParams, Link } from 'react-router-dom'
+import { useState, useEffect } from 'react'
 import { Calendar, User, ArrowLeft, Share2, Tag, Clock } from 'lucide-react'
 import { Button } from './ui/button'
-import { blogPosts } from '../data/blogPosts'
+import { blogApi, BlogPost as BlogPostType } from '../lib/supabase'
 
 const BlogPost = () => {
   const { slug } = useParams()
-  const post = blogPosts.find(p => p.slug === slug)
+  const [post, setPost] = useState<BlogPostType | null>(null)
+  const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
+
+  useEffect(() => {
+    const loadPost = async () => {
+      if (!slug) return
+      
+      try {
+        setLoading(true)
+        setError(null)
+        
+        const postData = await blogApi.getPostBySlug(slug)
+        setPost(postData)
+        
+        if (postData) {
+          // Load related posts
+          const related = await blogApi.getRelatedPosts(postData.id, postData.category, 3)
+          setRelatedPosts(related)
+        }
+      } catch (err) {
+        console.error('Error loading blog post:', err)
+        setError('Failed to load blog post. Please try again later.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadPost()
+  }, [slug])
+
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading article...</p>
+        </div>
+      </div>
+    )
+  }
+
+  if (error) {
+    return (
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+        <div className="text-center">
+          <h1 className="text-4xl font-bold text-gray-900 mb-4">Error Loading Article</h1>
+          <p className="text-gray-600 mb-8">{error}</p>
+          <div className="space-x-4">
+            <Button onClick={() => window.location.reload()} className="bg-emerald-600 hover:bg-emerald-700">
+              Try Again
+            </Button>
+            <Link to="/blog">
+              <Button variant="outline">
+                <ArrowLeft className="mr-2 h-4 w-4" />
+                Back to Blog
+              </Button>
+            </Link>
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   if (!post) {
     return (
@@ -30,10 +94,6 @@ const BlogPost = () => {
   }
 
   const estimatedReadTime = Math.ceil(post.content.split(' ').length / 200)
-
-  const relatedPosts = blogPosts
-    .filter(p => p.id !== post.id && (p.category === post.category || p.tags.some(tag => post.tags.includes(tag))))
-    .slice(0, 3)
 
   const handleShare = () => {
     if (navigator.share) {

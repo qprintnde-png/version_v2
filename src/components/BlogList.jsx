@@ -1,20 +1,46 @@
 import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, User, ArrowRight, Search, Tag } from 'lucide-react'
 import { Button } from './ui/button'
-import { blogPosts, categories } from '../data/blogPosts'
+import { blogApi, BlogPost, BlogCategory } from '../lib/supabase'
 
 const BlogList = () => {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [categories, setCategories] = useState<string[]>(['All'])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState<string | null>(null)
 
-  const filteredPosts = blogPosts.filter(post => {
-    const matchesCategory = selectedCategory === 'All' || post.category === selectedCategory
-    const matchesSearch = post.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.excerpt.toLowerCase().includes(searchTerm.toLowerCase()) ||
-                         post.tags.some(tag => tag.toLowerCase().includes(searchTerm.toLowerCase()))
-    return matchesCategory && matchesSearch
-  })
+  // Load blog posts and categories
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        setLoading(true)
+        setError(null)
+        
+        // Load categories
+        const categoriesData = await blogApi.getCategories()
+        const categoryNames = ['All', ...categoriesData.map(cat => cat.name)]
+        setCategories(categoryNames)
+        
+        // Load posts
+        const postsData = await blogApi.getPosts(
+          selectedCategory === 'All' ? undefined : selectedCategory,
+          searchTerm || undefined
+        )
+        setBlogPosts(postsData)
+      } catch (err) {
+        console.error('Error loading blog data:', err)
+        setError('Failed to load blog posts. Please try again later.')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    loadData()
+  }, [selectedCategory, searchTerm])
 
   const formatDate = (dateString) => {
     const options = { year: 'numeric', month: 'long', day: 'numeric' }
@@ -22,7 +48,7 @@ const BlogList = () => {
   }
 
   const featuredPost = blogPosts[0]
-  const regularPosts = filteredPosts.slice(1)
+  const regularPosts = blogPosts.slice(1)
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -75,8 +101,31 @@ const BlogList = () => {
           </div>
         </div>
 
+        {/* Loading State */}
+        {loading && (
+          <div className="text-center py-12">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-emerald-600 mx-auto mb-4"></div>
+            <p className="text-gray-600">Loading blog posts...</p>
+          </div>
+        )}
+
+        {/* Error State */}
+        {error && (
+          <div className="text-center py-12">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-6 max-w-md mx-auto">
+              <p className="text-red-800">{error}</p>
+              <Button 
+                onClick={() => window.location.reload()} 
+                className="mt-4 bg-red-600 hover:bg-red-700"
+              >
+                Try Again
+              </Button>
+            </div>
+          </div>
+        )}
+
         {/* Featured Post */}
-        {selectedCategory === 'All' && !searchTerm && (
+        {!loading && !error && selectedCategory === 'All' && !searchTerm && featuredPost && (
           <div className="mb-16">
             <h2 className="text-3xl font-bold text-gray-900 mb-8">Featured Article</h2>
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
@@ -135,14 +184,14 @@ const BlogList = () => {
           <h2 className="text-3xl font-bold text-gray-900 mb-8">
             {selectedCategory === 'All' ? 'Latest Articles' : `${selectedCategory} Articles`}
             <span className="text-lg font-normal text-gray-500 ml-2">
-              ({filteredPosts.length} {filteredPosts.length === 1 ? 'article' : 'articles'})
+              ({blogPosts.length} {blogPosts.length === 1 ? 'article' : 'articles'})
             </span>
           </h2>
         </div>
 
-        {filteredPosts.length > 0 ? (
+        {!loading && !error && blogPosts.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {(selectedCategory === 'All' && !searchTerm ? regularPosts : filteredPosts).map((post) => (
+            {(selectedCategory === 'All' && !searchTerm ? regularPosts : blogPosts).map((post) => (
               <article key={post.id} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
                 <div className="relative h-48 overflow-hidden">
                   <img
@@ -201,7 +250,7 @@ const BlogList = () => {
               </article>
             ))}
           </div>
-        ) : (
+        ) : !loading && !error && (
           <div className="text-center py-16">
             <div className="max-w-md mx-auto">
               <Search className="h-16 w-16 text-gray-300 mx-auto mb-4" />
