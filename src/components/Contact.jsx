@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Mail, Phone, MapPin, Clock, Building2, Send } from 'lucide-react'
 import { Button } from './ui/button'
+import { contactApi } from '../lib/supabase'
 
 // Analytics tracking function
 const trackEvent = (eventName, properties = {}) => {
@@ -81,13 +82,34 @@ const Contact = () => {
     setIsSubmitting(true)
     setSubmitStatus(null)
 
-    // Simulate form submission
-    setTimeout(() => {
+    try {
+      // Track form submission attempt
+      trackEvent('contact_form_submitted', {
+        event_category: 'Lead Generation',
+        event_label: 'Contact Form Submission',
+        form_subject: formData.subject,
+        institution_name: formData.institution || 'not_provided',
+        inquiry_type: formData.subject,
+        value: 3
+      })
+
+      // Submit the form
+      const result = await contactApi.submitContactForm({
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        institution: formData.institution,
+        title: formData.title,
+        subject: formData.subject,
+        message: formData.message
+      })
+
       setSubmitStatus({
         type: 'success',
-        message: 'Thank you for your inquiry! Our team will contact you within 24 hours.'
+        message: result.message
       })
-      // Reset form
+
+      // Reset form on success
       setFormData({
         name: '',
         email: '',
@@ -97,8 +119,31 @@ const Contact = () => {
         message: '',
         subject: 'consultation'
       })
+
+      // Track successful submission
+      trackEvent('contact_form_success', {
+        event_category: 'Lead Generation',
+        event_label: 'Contact Form Success',
+        form_subject: formData.subject,
+        value: 5
+      })
+
+    } catch (error) {
+      console.error('Form submission error:', error)
+      setSubmitStatus({
+        type: 'error',
+        message: error.message || 'Failed to submit form. Please try again.'
+      })
+
+      // Track submission error
+      trackEvent('contact_form_error', {
+        event_category: 'Form Error',
+        event_label: 'Contact Form Error',
+        error_message: error.message
+      })
+    } finally {
       setIsSubmitting(false)
-    }, 2000)
+    }
   }
 
   const contactInfo = [

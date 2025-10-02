@@ -11,6 +11,7 @@ import Contract from './components/Contract'
 import BlogList from './components/BlogList'
 import BlogPost from './components/BlogPost'
 import GetStarted from './components/GetStarted'
+import AdminDashboard from './components/AdminDashboard'
 import './App.css'
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
             <Route path="/contact" element={<Contact />} />
             <Route path="/contract" element={<Contract />} />
             <Route path="/get-started" element={<GetStarted />} />
+            <Route path="/admin/dashboard" element={<AdminDashboard />} />
           </Routes>
         </main>
         <Footer />
