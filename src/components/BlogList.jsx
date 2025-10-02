@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import { Calendar, User, ArrowRight, Search, Tag } from 'lucide-react'
 import { Button } from './ui/button'
 import { blogApi, BlogPost, BlogCategory } from '../lib/supabase'
+import LazyImage from './ui/LazyImage'
 
 const BlogList = () => {
   const [selectedCategory, setSelectedCategory] = useState('All')
@@ -131,7 +132,7 @@ const BlogList = () => {
             <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-0">
                 <div className="relative h-64 lg:h-auto">
-                  <img
+                  <LazyImage
                     src={featuredPost.image}
                     alt={featuredPost.title}
                     className="w-full h-full object-cover"
@@ -194,10 +195,10 @@ const BlogList = () => {
             {(selectedCategory === 'All' && !searchTerm ? regularPosts : blogPosts).map((post) => (
               <article key={post.id} className="bg-white rounded-xl shadow-sm hover:shadow-lg transition-shadow duration-300 overflow-hidden group">
                 <div className="relative h-48 overflow-hidden">
-                  <img
+                  <LazyImage
                     src={post.image}
                     alt={post.title}
-                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    className="w-full h-full group-hover:scale-105 transition-transform duration-300"
                   />
                   <div className="absolute top-4 left-4">
                     <span className="bg-white/90 backdrop-blur-sm text-emerald-700 px-3 py-1 rounded-full text-sm font-medium">

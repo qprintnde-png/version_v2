@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 import { Calendar, User, ArrowLeft, Share2, Tag, Clock } from 'lucide-react'
 import { Button } from './ui/button'
 import { blogApi, BlogPost as BlogPostType } from '../lib/supabase'
+import LazyImage from './ui/LazyImage'
 
 const BlogPost = () => {
   const { slug } = useParams()
@@ -167,7 +168,7 @@ const BlogPost = () => {
       <section className="bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="relative h-64 md:h-96 rounded-xl overflow-hidden">
-            <img
+            <LazyImage
               src={post.image}
               alt={post.title}
               className="w-full h-full object-cover"
@@ -230,10 +231,10 @@ const BlogPost = () => {
               {relatedPosts.map((relatedPost) => (
                 <article key={relatedPost.id} className="bg-gray-50 rounded-xl overflow-hidden hover:shadow-lg transition-shadow duration-300 group">
                   <div className="relative h-48 overflow-hidden">
-                    <img
+                    <LazyImage
                       src={relatedPost.image}
                       alt={relatedPost.title}
-                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                      className="w-full h-full group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="absolute top-4 left-4">
                       <span className="bg-white/90 backdrop-blur-sm text-emerald-700 px-3 py-1 rounded-full text-sm font-medium">

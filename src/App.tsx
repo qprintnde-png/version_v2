@@ -1,42 +1,61 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Suspense } from 'react'
 import Navbar from './components/Navbar'
 import Footer from './components/Footer'
 import ScrollToTop from './components/ScrollToTop'
-import Home from './components/Home'
-import Products from './components/Products'
-import About from './components/About'
-import Contact from './components/Contact'
-import Services from './components/Services'
-import Contract from './components/Contract'
-import BlogList from './components/BlogList'
-import BlogPost from './components/BlogPost'
-import GetStarted from './components/GetStarted'
-import AdminDashboard from './components/AdminDashboard'
+import ErrorBoundary from './components/ui/ErrorBoundary'
+import LoadingSpinner from './components/ui/LoadingSpinner'
+import {
+  Home,
+  Products,
+  Services,
+  About,
+  Contact,
+  Contract,
+  BlogList,
+  BlogPost,
+  GetStarted,
+  AdminDashboard
+} from './components/LazyComponents'
 import './App.css'
+
+// Loading component for Suspense fallback
+const PageLoader = () => (
+  <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="text-center">
+      <LoadingSpinner size="lg" className="mb-4" />
+      <p className="text-gray-600">Loading page...</p>
+    </div>
+  </div>
+)
 
 function App() {
   return (
-    <Router>
-      <div className="min-h-screen flex flex-col">
-        <ScrollToTop />
-        <Navbar />
-        <main className="flex-grow">
-          <Routes>
-            <Route path="/" element={<Home />} />
-            <Route path="/products" element={<Products />} />
-            <Route path="/about" element={<About />} />
-            <Route path="/services" element={<Services />} />
-            <Route path="/blog" element={<BlogList />} />
-            <Route path="/blog/:slug" element={<BlogPost />} />
-            <Route path="/contact" element={<Contact />} />
-            <Route path="/contract" element={<Contract />} />
-            <Route path="/get-started" element={<GetStarted />} />
-            <Route path="/admin/dashboard" element={<AdminDashboard />} />
-          </Routes>
-        </main>
-        <Footer />
-      </div>
-    </Router>
+    <ErrorBoundary>
+      <Router>
+        <div className="min-h-screen flex flex-col">
+          <ScrollToTop />
+          <Navbar />
+          <main className="flex-grow">
+            <Suspense fallback={<PageLoader />}>
+              <Routes>
+                <Route path="/" element={<Home />} />
+                <Route path="/products" element={<Products />} />
+                <Route path="/about" element={<About />} />
+                <Route path="/services" element={<Services />} />
+                <Route path="/blog" element={<BlogList />} />
+                <Route path="/blog/:slug" element={<BlogPost />} />
+                <Route path="/contact" element={<Contact />} />
+                <Route path="/contract" element={<Contract />} />
+                <Route path="/get-started" element={<GetStarted />} />
+                <Route path="/admin/dashboard" element={<AdminDashboard />} />
+              </Routes>
+            </Suspense>
+          </main>
+          <Footer />
+        </div>
+      </Router>
+    </ErrorBoundary>
   )
 }
 

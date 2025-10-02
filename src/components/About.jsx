@@ -1,5 +1,6 @@
 import { Users, Target, Award, TrendingUp, Heart, Globe, Lightbulb, Shield } from 'lucide-react'
 import { Link } from 'react-router-dom'
+import LazyImage from './ui/LazyImage'
 
 const About = () => {
   const values = [
@@ -215,18 +216,11 @@ const About = () => {
             {team.map((member, index) => (
               <div key={index} className="text-center bg-white rounded-lg shadow-md overflow-hidden">
                 <div className="w-full h-64 bg-gray-200 overflow-hidden relative group">
-                  <img
+                  <LazyImage
                     src={member.image}
                     alt={member.alt}
-                    className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
-                    onError={(e) => {
-                      e.target.style.display = 'none';
-                      e.target.nextSibling.style.display = 'flex';
-                    }}
+                    className="w-full h-full transition-transform duration-300 group-hover:scale-105"
                   />
-                  <div className="w-full h-full bg-gray-200 hidden items-center justify-center absolute inset-0">
-                    <Users className="h-16 w-16 text-gray-400" />
-                  </div>
                 </div>
                 <div className="p-6">
                   <h3 className="text-xl font-semibold text-gray-900 mb-1">

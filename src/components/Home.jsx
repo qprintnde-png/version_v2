@@ -1,6 +1,7 @@
 import { ArrowRight, CheckCircle, Star, Users, Award, TrendingUp, GraduationCap, BookOpen, Calendar, UserCheck, Shield, BarChart3 } from 'lucide-react'
 import { Button } from './ui/button'
 import { Link } from 'react-router-dom'
+import LazyImage from './ui/LazyImage'
 
 const Home = () => {
   const features = [
@@ -32,21 +33,24 @@ const Home = () => {
       title: "Principal",
       company: "Dhaka Model School & College",
       content: "SchoolxNow has transformed our institutional operations with their enterprise-grade solution. The ROI has been exceptional.",
-      rating: 5
+      rating: 5,
+      image: "https://images.pexels.com/photos/415829/pexels-photo-415829.jpeg?auto=compress&cs=tinysrgb&w=150"
     },
     {
       name: "Mohammad Karim",
       title: "Director",
       company: "Chittagong International School",
       content: "Outstanding technical excellence and professional service delivery. Their solution has streamlined our entire academic ecosystem.",
-      rating: 5
+      rating: 5,
+      image: "https://images.pexels.com/photos/1222271/pexels-photo-1222271.jpeg?auto=compress&cs=tinysrgb&w=150"
     },
     {
       name: "Fatima Rahman",
       title: "Administrator",
       company: "Sylhet Grammar School",
       content: "The most comprehensive educational technology platform we've implemented. Exceptional support and measurable results.",
-      rating: 5
+      rating: 5,
+      image: "https://images.pexels.com/photos/1239291/pexels-photo-1239291.jpeg?auto=compress&cs=tinysrgb&w=150"
     }
   ]
 
@@ -215,6 +219,26 @@ const Home = () => {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 sm:gap-8">
             {testimonials.map((testimonial, index) => (
               <div key={index} className="bg-gray-50 p-6 sm:p-8 rounded-lg">
+                <div className="flex items-center mb-4">
+                  <div className="w-12 h-12 rounded-full overflow-hidden mr-4">
+                    <LazyImage
+                      src={testimonial.image}
+                      alt={testimonial.name}
+                      className="w-full h-full"
+                    />
+                  </div>
+                  <div>
+                    <div className="font-semibold text-gray-900 text-base sm:text-lg">
+                      {testimonial.name}
+                    </div>
+                    <div className="text-emerald-700 font-medium text-sm sm:text-base">
+                      {testimonial.title}
+                    </div>
+                    <div className="text-gray-500 text-sm">
+                      {testimonial.company}
+                    </div>
+                  </div>
+                </div>
                 <div className="flex justify-center sm:justify-start mb-4 sm:mb-6">
                   {[...Array(testimonial.rating)].map((_, i) => (
                     <Star key={i} className="h-5 w-5 text-yellow-400 fill-current" />
@@ -223,17 +247,6 @@ const Home = () => {
                 <p className="text-gray-700 mb-4 sm:mb-6 italic leading-relaxed text-center sm:text-left">
                   "{testimonial.content}"
                 </p>
-                <div className="text-center sm:text-left">
-                  <div className="font-semibold text-gray-900 text-base sm:text-lg">
-                    {testimonial.name}
-                  </div>
-                  <div className="text-emerald-700 font-medium text-sm sm:text-base">
-                    {testimonial.title}
-                  </div>
-                  <div className="text-gray-500 text-sm">
-                    {testimonial.company}
-                  </div>
-                </div>
               </div>
             ))}
           </div>
