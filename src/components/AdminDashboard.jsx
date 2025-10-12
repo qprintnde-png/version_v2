@@ -1,14 +1,14 @@
 import { useState, useEffect } from 'react'
 import { Mail, Phone, Building2, Calendar, Filter, Eye, CheckCircle, Clock, AlertCircle, X } from 'lucide-react'
 import { Button } from './ui/button'
-import { contactApi, ContactSubmission } from '../lib/supabase'
+import { contactApi } from '../lib/supabase'
 
 const AdminDashboard = () => {
-  const [submissions, setSubmissions] = useState<ContactSubmission[]>([])
+  const [submissions, setSubmissions] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState(null)
   const [selectedStatus, setSelectedStatus] = useState('all')
-  const [selectedSubmission, setSelectedSubmission] = useState<ContactSubmission | null>(null)
+  const [selectedSubmission, setSelectedSubmission] = useState(null)
   const [showModal, setShowModal] = useState(false)
 
   // Load contact submissions
@@ -30,7 +30,7 @@ const AdminDashboard = () => {
     loadSubmissions()
   }, [selectedStatus])
 
-  const handleStatusUpdate = async (id: string, newStatus: ContactSubmission['status']) => {
+  const handleStatusUpdate = async (id, newStatus) => {
     try {
       await contactApi.updateSubmissionStatus(id, newStatus)
       // Refresh the list
@@ -42,7 +42,7 @@ const AdminDashboard = () => {
     }
   }
 
-  const formatDate = (dateString: string) => {
+  const formatDate = (dateString) => {
     return new Date(dateString).toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'short',
@@ -52,7 +52,7 @@ const AdminDashboard = () => {
     })
   }
 
-  const getStatusIcon = (status: string) => {
+  const getStatusIcon = (status) => {
     switch (status) {
       case 'new':
         return <AlertCircle className="h-4 w-4 text-blue-500" />
@@ -67,7 +67,7 @@ const AdminDashboard = () => {
     }
   }
 
-  const getStatusColor = (status: string) => {
+  const getStatusColor = (status) => {
     switch (status) {
       case 'new':
         return 'bg-blue-100 text-blue-800'
@@ -230,7 +230,7 @@ const AdminDashboard = () => {
                             </Button>
                             <select
                               value={submission.status || 'new'}
-                              onChange={(e) => handleStatusUpdate(submission.id!, e.target.value as ContactSubmission['status'])}
+                              onChange={(e) => handleStatusUpdate(submission.id, e.target.value)}
                               className="text-xs border border-gray-300 rounded px-2 py-1 focus:ring-1 focus:ring-emerald-500"
                             >
                               <option value="new">New</option>
@@ -309,10 +309,10 @@ const AdminDashboard = () => {
                     <select
                       value={selectedSubmission.status || 'new'}
                       onChange={(e) => {
-                        handleStatusUpdate(selectedSubmission.id!, e.target.value as ContactSubmission['status'])
+                        handleStatusUpdate(selectedSubmission.id, e.target.value)
                         setSelectedSubmission({
                           ...selectedSubmission,
-                          status: e.target.value as ContactSubmission['status']
+                          status: e.target.value
                         })
                       }}
                       className="border border-gray-300 rounded px-3 py-1 focus:ring-2 focus:ring-emerald-500"

@@ -2,15 +2,15 @@ import { useParams, Link } from 'react-router-dom'
 import { useState, useEffect } from 'react'
 import { Calendar, User, ArrowLeft, Share2, Tag, Clock } from 'lucide-react'
 import { Button } from './ui/button'
-import { blogApi, BlogPost as BlogPostType } from '../lib/supabase'
+import { blogApi } from '../lib/supabase'
 import LazyImage from './ui/LazyImage'
 
 const BlogPost = () => {
   const { slug } = useParams()
-  const [post, setPost] = useState<BlogPostType | null>(null)
-  const [relatedPosts, setRelatedPosts] = useState<BlogPostType[]>([])
+  const [post, setPost] = useState(null)
+  const [relatedPosts, setRelatedPosts] = useState([])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState(null)
 
   useEffect(() => {
     const loadPost = async () => {

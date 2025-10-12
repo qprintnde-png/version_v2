@@ -33,6 +33,21 @@ export interface BlogCategory {
   created_at: string
 }
 
+// Types for contact form system
+export interface ContactSubmission {
+  id?: string
+  name: string
+  email: string
+  phone?: string
+  institution: string
+  title?: string
+  subject: string
+  message: string
+  status?: 'new' | 'in_progress' | 'resolved' | 'closed'
+  created_at?: string
+  updated_at?: string
+}
+
 // Blog API functions
 export const blogApi = {
   // Get all published blog posts
@@ -157,5 +172,62 @@ export const blogApi = {
       console.error('Error deleting blog post:', error)
       throw error
     }
+  }
+}
+
+// Contact API functions
+export const contactApi = {
+  // Submit a new contact form
+  async submitContactForm(submission: Omit<ContactSubmission, 'id' | 'created_at' | 'updated_at'>): Promise<ContactSubmission> {
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .insert([{ ...submission, status: 'new' }])
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error submitting contact form:', error)
+      throw error
+    }
+
+    return data
+  },
+
+  // Get contact submissions (admin)
+  async getContactSubmissions(status?: string): Promise<ContactSubmission[]> {
+    let query = supabase
+      .from('contact_submissions')
+      .select('*')
+      .order('created_at', { ascending: false })
+
+    if (status && status !== 'all') {
+      query = query.eq('status', status)
+    }
+
+    const { data, error } = await query
+
+    if (error) {
+      console.error('Error fetching contact submissions:', error)
+      throw error
+    }
+
+    return data || []
+  },
+
+  // Update submission status (admin)
+  async updateSubmissionStatus(id: string, status: ContactSubmission['status']): Promise<ContactSubmission> {
+    const { data, error } = await supabase
+      .from('contact_submissions')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single()
+
+    if (error) {
+      console.error('Error updating submission status:', error)
+      throw error
+    }
+
+    return data
   }
 }

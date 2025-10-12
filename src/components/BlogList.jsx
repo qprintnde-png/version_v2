@@ -1,18 +1,17 @@
-import { useState } from 'react'
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { Calendar, User, ArrowRight, Search, Tag } from 'lucide-react'
 import { Button } from './ui/button'
-import { blogApi, BlogPost, BlogCategory } from '../lib/supabase'
+import { blogApi } from '../lib/supabase'
 import LazyImage from './ui/LazyImage'
 
 const BlogList = () => {
   const [selectedCategory, setSelectedCategory] = useState('All')
   const [searchTerm, setSearchTerm] = useState('')
-  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
-  const [categories, setCategories] = useState<string[]>(['All'])
+  const [blogPosts, setBlogPosts] = useState([])
+  const [categories, setCategories] = useState(['All'])
   const [loading, setLoading] = useState(true)
-  const [error, setError] = useState<string | null>(null)
+  const [error, setError] = useState(null)
 
   // Load blog posts and categories
   useEffect(() => {
