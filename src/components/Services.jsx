@@ -351,9 +351,11 @@ const Services = () => {
                 Schedule Consultation
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="text-lg px-10 py-4 h-auto text-white border-white hover:bg-white hover:text-gray-900">
-              <Link to="/products">Explore Solutions</Link>
-            </Button>
+            <Link to="/products">
+              <Button variant="outline" size="lg" className="text-lg px-10 py-4 h-auto text-white border-2 border-white hover:bg-white hover:text-gray-900">
+                Explore Solutions
+              </Button>
+            </Link>
           </div>
         </div>
       </section>

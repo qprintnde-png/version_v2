@@ -269,9 +269,11 @@ const Home = () => {
                 Request Consultation
               </Button>
             </Link>
-            <Button variant="outline" size="lg" className="text-base sm:text-lg px-6 sm:px-10 py-3 sm:py-4 h-auto text-white border-white hover:bg-white hover:text-gray-900 w-full sm:w-auto">
-              <Link to="/products">Explore Solutions</Link>
-            </Button>
+            <Link to="/products">
+              <Button variant="outline" size="lg" className="text-base sm:text-lg px-6 sm:px-10 py-3 sm:py-4 h-auto text-white border-2 border-white hover:bg-white hover:text-gray-900 w-full sm:w-auto">
+                Explore Solutions
+              </Button>
+            </Link>
           </div>
         </div>
       </section>
