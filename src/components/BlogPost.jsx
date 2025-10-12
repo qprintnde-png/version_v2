@@ -289,7 +289,7 @@ const BlogPost = () => {
               </Button>
             </Link>
             <Link to="/products">
-              <Button variant="outline" size="lg" className="border-white text-white hover:bg-white hover:text-emerald-600 px-8 py-3 font-semibold">
+              <Button variant="outline" size="lg" className="border-2 border-white text-white hover:bg-white hover:text-emerald-600 px-8 py-3 font-semibold">
                 Explore Solutions
               </Button>
             </Link>
