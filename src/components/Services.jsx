@@ -336,13 +336,13 @@ const Services = () => {
       </section>
 
       {/* CTA Section */}
-      <section className="py-20 bg-gray-900">
+      <section className="py-12 sm:py-16 bg-gray-900">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
           <h2 className="text-4xl md:text-5xl font-bold text-white mb-6">
             Ready to Begin Your Transformation?
           </h2>
-          <p className="text-xl text-gray-300 mb-12 max-w-3xl mx-auto leading-relaxed">
-            Connect with our professional services team to discuss your requirements and develop 
+          <p className="text-xl text-gray-300 mb-8 max-w-3xl mx-auto leading-relaxed">
+            Connect with our professional services team to discuss your requirements and develop
             a customized implementation strategy for your institution.
           </p>
           <div className="flex flex-col sm:flex-row gap-6 justify-center">
